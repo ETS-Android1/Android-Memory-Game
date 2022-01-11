@@ -1,5 +1,8 @@
 package com.example.ca;
 
+import static com.example.ca.MainActivity.musicFlag;
+import static com.example.ca.MainActivity.rlGameActivity;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -376,6 +379,7 @@ public class GameActivity extends AppCompatActivity {
         if (match == 6) {
             soundpool.play(won, 1, 1, 1, 0, 1);
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.putExtra("musicFlag", musicFlag);
             startActivity(intent);
         }
     }

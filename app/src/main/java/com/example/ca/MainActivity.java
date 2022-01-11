@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected static ActivityResultLauncher<Intent> rlGameActivity;
     protected static boolean musicFlag = true;
     ImageButton btnMusic;
-    Button startButton2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         );
 
         btnMusic = findViewById(R.id.btnMusic);
+        Intent intent = getIntent();
+        musicFlag = intent.getBooleanExtra("musicFlag", true);
 
         if (musicFlag) {
             btnMusic.setBackgroundResource(R.drawable.music_play);
