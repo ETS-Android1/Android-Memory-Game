@@ -33,7 +33,7 @@ public class myRunnable implements Runnable{
             @Override
             public void onClick(View v) {
                 if(MainActivity.selected.size() < 6){
-                    Bitmap bm = fetched[i];
+                    Bitmap bm = fetched[i-1];
                     if(!MainActivity.selected.contains(bm)){
                         iv.setBackgroundResource(R.drawable.border);
                         MainActivity.selected.add(bm);

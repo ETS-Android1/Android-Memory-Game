@@ -25,6 +25,7 @@ public class GameActivity extends AppCompatActivity {
     int firstClick, secondClick;
     int cardNumber = 1;
     int match = 0;
+    Handler timerHandler;
 
     ImageView pic11,pic12,pic13,pic21,pic22,pic23,pic31,pic32,pic33,pic41,pic42,pic43;
 
@@ -38,10 +39,10 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
-        Chronometer chronometer = (Chronometer) findViewById(R.id.timer); // initiate a chronometer
-        chronometer.start();
 
         score = findViewById(R.id.matchProgress);
+
+        startTimer();
 
         pic11 = findViewById(R.id.imgs1);
         pic12 = findViewById(R.id.imgs2);
@@ -370,6 +371,26 @@ public class GameActivity extends AppCompatActivity {
        image24 = images.get(9);
        image25 = images.get(10);
        image26 = images.get(11);
+
+    }
+
+    private void startTimer() {
+        timerText = findViewById(R.id.timer);
+        timerHandler = new Handler();
+        long currentSystemTime = System.currentTimeMillis();
+        timerHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                long millis = System.currentTimeMillis() - currentSystemTime;
+                int seconds = (int) (millis / 1000);
+                int minutes = seconds / 60;
+                int hours = minutes / 60;
+                seconds = seconds % 60;
+
+                timerText.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
+                timerHandler.postDelayed(this, 1000);
+            }
+        });
 
     }
 }
