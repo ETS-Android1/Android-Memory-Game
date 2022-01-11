@@ -1,8 +1,5 @@
 package com.example.ca;
 
-import static com.example.ca.MainActivity.musicFlag;
-import static com.example.ca.MainActivity.rlGameActivity;
-
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.view.View;
@@ -49,9 +46,7 @@ public class myRunnable implements Runnable{
                                 @Override
                                 public void onClick(View v){
                                     Intent intent = new Intent(v.getContext(), GameActivity.class);
-/*                                    v.getContext().startActivity(intent);*/
-                                    intent.putExtra("musicFlag", musicFlag);
-                                    rlGameActivity.launch(intent);
+                                    v.getContext().startActivity(intent);
                                 }
                             });
                         }

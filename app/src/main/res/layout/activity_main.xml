@@ -33,11 +33,26 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/btnSubmitUrl"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:background="@drawable/music_play"
         android:scaleType="fitXY"
-        android:layout_marginRight="40dp"
+        app:layout_constraintVertical_bias="0.005"
+        app:layout_constraintHorizontal_bias="0.98"
+        />
+
+    <ImageButton
+        android:id="@+id/btnLeaderBoard"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/btnMusic"
+        app:layout_constraintVertical_bias="0.007"
+       app:layout_constraintHorizontal_bias="0.985"
+        android:background="@drawable/trophy"
         />
 
     <ProgressBar
@@ -368,5 +383,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.85" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
