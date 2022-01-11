@@ -1,11 +1,20 @@
 package com.example.ca;
 
+import static com.example.ca.MainActivity.musicFlag;
+import static com.example.ca.MainActivity.rlGameActivity;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.widget.Chronometer;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,21 +30,54 @@ public class GameActivity extends AppCompatActivity {
     int firstClick, secondClick;
     int cardNumber = 1;
     int match = 0;
+    Handler timerHandler;
+    protected static boolean musicFlag = true;
+    ImageButton btnMusic;
 
     ImageView pic11,pic12,pic13,pic21,pic22,pic23,pic31,pic32,pic33,pic41,pic42,pic43;
 
     Integer [] cardArray = {11,12,13,14,15,16,11,12,13,14,15,16};
 
     Bitmap image11,image12,image13,image14,image15,image16,image21,image22,image23,image24,image25,image26;
+    SoundPool soundpool;
+    int correct, fail, won;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
-        Chronometer chronometer = (Chronometer) findViewById(R.id.timer); // initiate a chronometer
-        chronometer.start();
 
         score = findViewById(R.id.matchProgress);
+
+        startTimer();
+
+        btnMusic = findViewById(R.id.btnMusic);
+        Intent intent = getIntent();
+
+        musicFlag = intent.getBooleanExtra("musicFlag", true);
+        if (musicFlag) {
+            btnMusic.setBackgroundResource(R.drawable.music_play);
+        }
+        else {
+            btnMusic.setBackgroundResource(R.drawable.music_stop);
+        }
+
+        btnMusic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (musicFlag) {
+                    btnMusic.setBackgroundResource(R.drawable.music_stop);
+                    musicFlag = false;
+                }
+                else  {
+                    btnMusic.setBackgroundResource(R.drawable.music_play);
+                    musicFlag = true;
+                }
+                Intent intent = new Intent(GameActivity.this, MyMusicService.class);
+                intent.setAction("play_bg_music");
+                startService(intent);
+            }
+        });
 
         pic11 = findViewById(R.id.imgs1);
         pic12 = findViewById(R.id.imgs2);
@@ -126,6 +168,24 @@ public class GameActivity extends AppCompatActivity {
             int card = Integer.parseInt((String) view.getTag());
             setImage(pic43, card);
         });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AudioAttributes audioAttributes = new AudioAttributes
+                .Builder()
+                .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build();
+            soundpool = new SoundPool
+                    .Builder()
+                    .setMaxStreams(3)
+                    .setAudioAttributes(audioAttributes)
+                    .build();
+        }
+        else {
+            soundpool = new SoundPool(3, AudioManager.STREAM_MUSIC, 0);
+        }
+        correct = soundpool.load(this, R.raw.correct, 1);
+        fail = soundpool.load(this, R.raw.fail, 1);
+        won = soundpool.load(this, R.raw.won, 1);
 
     }
 
@@ -214,6 +274,7 @@ public class GameActivity extends AppCompatActivity {
     private void calculate(){
         ArrayList<ImageView> imageArray = new ArrayList<>(Arrays.asList(pic11,pic12,pic13,pic21,pic22,pic23,pic31,pic32,pic33,pic41,pic42,pic43));
         if(firstCard == secondCard){
+            soundpool.play(correct, 1, 1, 1, 0, 1);
             switch (firstClick){
                 case 0:
                     pic11.setSelected(true);
@@ -291,13 +352,13 @@ public class GameActivity extends AppCompatActivity {
                     pic43.setSelected(true);
                     break;
             }
-
             match++;
             score.setText(match + " of 6 matches");
 
         }
 
         else {
+            soundpool.play(fail, 1, 1, 1, 0, 1);
             for (int i = 0; i < imageArray.size(); i++){
                 if(!imageArray.get(i).isSelected()){
                     imageArray.get(i).setImageResource(R.drawable.cardback);
@@ -316,9 +377,9 @@ public class GameActivity extends AppCompatActivity {
 
     private void checkGameEnd(){
         if (match == 6) {
-
-
+            soundpool.play(won, 1, 1, 1, 0, 1);
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.putExtra("musicFlag", musicFlag);
             startActivity(intent);
         }
     }
@@ -347,5 +408,49 @@ public class GameActivity extends AppCompatActivity {
        image25 = images.get(10);
        image26 = images.get(11);
 
+    }
+
+    private void startTimer() {
+        timerText = findViewById(R.id.timer);
+        timerHandler = new Handler();
+        long currentSystemTime = System.currentTimeMillis();
+        timerHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                long millis = System.currentTimeMillis() - currentSystemTime;
+                int seconds = (int) (millis / 1000);
+                int minutes = seconds / 60;
+                int hours = minutes / 60;
+                seconds = seconds % 60;
+
+                timerText.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
+                timerHandler.postDelayed(this, 1000);
+            }
+        });
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Intent intent = new Intent(GameActivity.this, MyMusicService.class);
+        intent.setAction("pause_bg_music");
+        startService(intent);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Intent intent = new Intent(GameActivity.this, MyMusicService.class);
+        intent.setAction("resume_bg_music");
+        startService(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("flagReturn", musicFlag);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }

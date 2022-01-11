@@ -33,6 +33,17 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toRightOf="@id/matchProgress"/>
 
+    <ImageButton
+        android:id="@+id/btnMusic"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/music_play"
+        android:scaleType="fitXY"
+        android:layout_marginRight="5dp"
+        />
+
     <ImageView
         android:id="@+id/imgs1"
         android:layout_width="0dp"
