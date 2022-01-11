@@ -3,6 +3,10 @@ package com.example.ca;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -32,6 +36,8 @@ public class GameActivity extends AppCompatActivity {
     Integer [] cardArray = {11,12,13,14,15,16,11,12,13,14,15,16};
 
     Bitmap image11,image12,image13,image14,image15,image16,image21,image22,image23,image24,image25,image26;
+    SoundPool soundpool;
+    int correct, fail, won;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,6 +165,24 @@ public class GameActivity extends AppCompatActivity {
             int card = Integer.parseInt((String) view.getTag());
             setImage(pic43, card);
         });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AudioAttributes audioAttributes = new AudioAttributes
+                .Builder()
+                .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build();
+            soundpool = new SoundPool
+                    .Builder()
+                    .setMaxStreams(3)
+                    .setAudioAttributes(audioAttributes)
+                    .build();
+        }
+        else {
+            soundpool = new SoundPool(3, AudioManager.STREAM_MUSIC, 0);
+        }
+        correct = soundpool.load(this, R.raw.correct, 1);
+        fail = soundpool.load(this, R.raw.fail, 1);
+        won = soundpool.load(this, R.raw.won, 1);
 
     }
 
@@ -247,6 +271,7 @@ public class GameActivity extends AppCompatActivity {
     private void calculate(){
         ArrayList<ImageView> imageArray = new ArrayList<>(Arrays.asList(pic11,pic12,pic13,pic21,pic22,pic23,pic31,pic32,pic33,pic41,pic42,pic43));
         if(firstCard == secondCard){
+            soundpool.play(correct, 1, 1, 1, 0, 1);
             switch (firstClick){
                 case 0:
                     pic11.setSelected(true);
@@ -324,13 +349,13 @@ public class GameActivity extends AppCompatActivity {
                     pic43.setSelected(true);
                     break;
             }
-
             match++;
             score.setText(match + " of 6 matches");
 
         }
 
         else {
+            soundpool.play(fail, 1, 1, 1, 0, 1);
             for (int i = 0; i < imageArray.size(); i++){
                 if(!imageArray.get(i).isSelected()){
                     imageArray.get(i).setImageResource(R.drawable.cardback);
@@ -349,8 +374,7 @@ public class GameActivity extends AppCompatActivity {
 
     private void checkGameEnd(){
         if (match == 6) {
-
-
+            soundpool.play(won, 1, 1, 1, 0, 1);
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
         }
