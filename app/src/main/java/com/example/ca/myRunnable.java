@@ -3,6 +3,7 @@ package com.example.ca;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -34,14 +35,22 @@ public class myRunnable implements Runnable{
                 if(MainActivity.selected.size() < 6){
                     Bitmap bm = fetched[i];
                     if(!MainActivity.selected.contains(bm)){
+                        iv.setBackgroundResource(R.drawable.border);
                         MainActivity.selected.add(bm);
                         TextView tv = v.getRootView().findViewById(R.id.txtNumberSelected);
                         tv.setText(MainActivity.selected.size()+" selected");
+                        if(MainActivity.selected.size() == 6){
+                            Button startButton = v.getRootView().findViewById(R.id.startButton);
+                            startButton.setVisibility(View.VISIBLE);
+                            startButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v){
+                                    Intent intent = new Intent(v.getContext(), SecondActivity.class);
+                                    v.getContext().startActivity(intent);
+                                }
+                            });
+                        }
                     }
-                }
-                else {
-                    Intent intent = new Intent(v.getContext(), SecondActivity.class);
-                    v.getContext().startActivity(intent);
                 }
             }
         });
