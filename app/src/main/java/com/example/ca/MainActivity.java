@@ -12,12 +12,14 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -120,9 +122,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (v.getId() == submitButton.getId()) {
             EditText et = findViewById(R.id.txtUrl);
             String url = et.getText().toString();
-            clearCurrentImages();
-            downloadImages(url);
-            clearCurrentSelected();
+
+            if (URLUtil.isValidUrl(url)){
+                clearCurrentImages();
+                clearCurrentSelected();
+                downloadImages(url);
+            } else {
+                Toast.makeText(getApplicationContext(),"Invalid URL", Toast.LENGTH_SHORT).show();
+            }
+
         }
     }
 
@@ -130,6 +138,66 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         selected = new ArrayList<>();
         TextView tv = findViewById(R.id.txtNumberSelected);
         tv.setText("");
+
+        ImageView img1 = findViewById(R.id.img1);
+        img1.setBackgroundResource(0);
+
+        ImageView img2 = findViewById(R.id.img2);
+        img2.setBackgroundResource(0);
+
+        ImageView img3 = findViewById(R.id.img3);
+        img3.setBackgroundResource(0);
+
+        ImageView img4 = findViewById(R.id.img4);
+        img4.setBackgroundResource(0);
+
+        ImageView img5 = findViewById(R.id.img5);
+        img5.setBackgroundResource(0);
+
+        ImageView img6 = findViewById(R.id.img6);
+        img6.setBackgroundResource(0);
+
+        ImageView img7 = findViewById(R.id.img7);
+        img7.setBackgroundResource(0);
+
+        ImageView img8 = findViewById(R.id.img8);
+        img8.setBackgroundResource(0);
+
+        ImageView img9 = findViewById(R.id.img9);
+        img9.setBackgroundResource(0);
+
+        ImageView img10 = findViewById(R.id.img10);
+        img10.setBackgroundResource(0);
+
+        ImageView img11 = findViewById(R.id.img11);
+        img11.setBackgroundResource(0);
+
+        ImageView img12 = findViewById(R.id.img12);
+        img12.setBackgroundResource(0);
+
+        ImageView img13 = findViewById(R.id.img13);
+        img13.setBackgroundResource(0);
+
+        ImageView img14 = findViewById(R.id.img14);
+        img14.setBackgroundResource(0);
+
+        ImageView img15 = findViewById(R.id.img15);
+        img15.setBackgroundResource(0);
+
+        ImageView img16 = findViewById(R.id.img16);
+        img16.setBackgroundResource(0);
+
+        ImageView img17 = findViewById(R.id.img17);
+        img17.setBackgroundResource(0);
+
+        ImageView img18 = findViewById(R.id.img18);
+        img18.setBackgroundResource(0);
+
+        ImageView img19 = findViewById(R.id.img19);
+        img19.setBackgroundResource(0);
+
+        ImageView img20 = findViewById(R.id.img20);
+        img20.setBackgroundResource(0);
     }
 
     public List<String> getImgSrc(String htmlStr) {
