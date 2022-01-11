@@ -3,6 +3,10 @@ package com.example.ca;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.Chronometer;
@@ -27,6 +31,8 @@ public class GameActivity extends AppCompatActivity {
     Integer [] cardArray = {11,12,13,14,15,16,11,12,13,14,15,16};
 
     Bitmap image11,image12,image13,image14,image15,image16,image21,image22,image23,image24,image25,image26;
+    SoundPool soundpool;
+    int correct, fail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +132,23 @@ public class GameActivity extends AppCompatActivity {
             int card = Integer.parseInt((String) view.getTag());
             setImage(pic43, card);
         });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AudioAttributes audioAttributes = new AudioAttributes
+                .Builder()
+                .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build();
+            soundpool = new SoundPool
+                    .Builder()
+                    .setMaxStreams(3)
+                    .setAudioAttributes(audioAttributes)
+                    .build();
+        }
+        else {
+            soundpool = new SoundPool(3, AudioManager.STREAM_MUSIC, 0);
+        }
+        correct = soundpool.load(this, R.raw.Correct, 1);
+        fail = soundpool.load(this, R.raw.Fail, 1);
 
     }
 
@@ -291,13 +314,14 @@ public class GameActivity extends AppCompatActivity {
                     pic43.setSelected(true);
                     break;
             }
-
+            soundpool.play(correct, 1, 1, 1, 0, 1);
             match++;
             score.setText(match + " of 6 matches");
 
         }
 
         else {
+            soundpool.play(1, 1, 1, 1, 0, 1);
             for (int i = 0; i < imageArray.size(); i++){
                 if(!imageArray.get(i).isSelected()){
                     imageArray.get(i).setImageResource(R.drawable.cardback);
