@@ -13,9 +13,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CA">
         <activity
-            android:name=".LeaderBoardActivity"
-            android:exported="false" />
-        <activity
             android:name=".SecondActivity"
             android:exported="false" />
 

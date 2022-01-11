@@ -1,9 +1,10 @@
 package com.example.ca;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -45,31 +46,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView progressText;
     //static Bitmap[] fetched;
     static ArrayList<Bitmap> selected = new ArrayList<Bitmap>();
-    private boolean musicFlag;
-    private ImageButton btnMusic;
-    private ImageButton btnLeaderBoard;
-    SharedPreferences sharedPref;
-    SharedPreferences.Editor editor;
+    protected static ActivityResultLauncher<Intent> rlGameActivity;
+    protected static boolean musicFlag = true;
+    ImageButton btnMusic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sharedPref = getSharedPreferences("music_flag", MODE_PRIVATE);
-
-        musicFlag = sharedPref.getBoolean("music_flag", musicFlag);
-
         startService(new Intent(MainActivity.this, MyMusicService.class));
 
-        if (musicFlag) {
-            Intent intent = new Intent(MainActivity.this, MyMusicService.class);
-            intent.setAction("play_bg_music");
-            startService(intent);
-        }
-
+        rlGameActivity = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if(result.getResultCode() == AppCompatActivity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            musicFlag = data.getBooleanExtra("flagReturn", true);
+                        }
+                    }
+                }
+        );
 
         btnMusic = findViewById(R.id.btnMusic);
+        Intent intent = getIntent();
+        musicFlag = intent.getBooleanExtra("musicFlag", true);
 
         if (musicFlag) {
             btnMusic.setBackgroundResource(R.drawable.music_play);
@@ -84,32 +86,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (musicFlag) {
                     btnMusic.setBackgroundResource(R.drawable.music_stop);
                     musicFlag = false;
-                    Intent intent = new Intent(MainActivity.this, MyMusicService.class);
-                    intent.setAction("pause_bg_music");
-                    startService(intent);
                 }
                 else  {
                     btnMusic.setBackgroundResource(R.drawable.music_play);
                     musicFlag = true;
-                    Intent intent = new Intent(MainActivity.this, MyMusicService.class);
-                    intent.setAction("resume_bg_music");
-                    startService(intent);
                 }
-                editor = sharedPref.edit();
-                editor.putBoolean("music_flag", musicFlag);
-                editor.commit();
-            }
-        });
-
-        btnLeaderBoard = findViewById(R.id.btnLeaderBoard);
-        btnLeaderBoard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                editor = sharedPref.edit();
-                editor.putBoolean("music_flag", musicFlag);
-                editor.commit();
-                Intent intent = new Intent(MainActivity.this, LeaderBoardActivity.class);
-                startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, MyMusicService.class);
+                intent.setAction("play_bg_music");
+                startService(intent);
             }
         });
 
@@ -346,6 +330,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+ /*   protected void registerForResult() {
+        rlGameActivity = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if(result.getResultCode() == AppCompatActivity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            musicFlag = data.getBooleanExtra("flagReturn", true);
+                        }
+                    }
+                }
+        );
+    }*/
 
     @Override
     public void onPause() {
@@ -358,18 +355,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onResume() {
         super.onResume();
-        musicFlag = sharedPref.getBoolean("music_flag", musicFlag);
         if (musicFlag) {
             btnMusic.setBackgroundResource(R.drawable.music_play);
-        } else {
+        }
+        else {
             btnMusic.setBackgroundResource(R.drawable.music_stop);
         }
-        if (musicFlag) {
-            Intent intent = new Intent(MainActivity.this, MyMusicService.class);
-            intent.setAction("resume_bg_music");
-            startService(intent);
-        }
+        Intent intent = new Intent(MainActivity.this, MyMusicService.class);
+        intent.setAction("resume_bg_music");
+        startService(intent);
     }
-
 
 }
