@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.widget.Chronometer;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,6 +24,8 @@ public class GameActivity extends AppCompatActivity {
     int cardNumber = 1;
     int match = 0;
     Handler timerHandler;
+    protected static boolean musicFlag = true;
+    ImageButton btnMusic;
 
     ImageView pic11,pic12,pic13,pic21,pic22,pic23,pic31,pic32,pic33,pic41,pic42,pic43;
 
@@ -37,6 +41,34 @@ public class GameActivity extends AppCompatActivity {
         score = findViewById(R.id.matchProgress);
 
         startTimer();
+
+        btnMusic = findViewById(R.id.btnMusic);
+        Intent intent = getIntent();
+
+        musicFlag = intent.getBooleanExtra("musicFlag", true);
+        if (musicFlag) {
+            btnMusic.setBackgroundResource(R.drawable.music_play);
+        }
+        else {
+            btnMusic.setBackgroundResource(R.drawable.music_stop);
+        }
+
+        btnMusic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (musicFlag) {
+                    btnMusic.setBackgroundResource(R.drawable.music_stop);
+                    musicFlag = false;
+                }
+                else  {
+                    btnMusic.setBackgroundResource(R.drawable.music_play);
+                    musicFlag = true;
+                }
+                Intent intent = new Intent(GameActivity.this, MyMusicService.class);
+                intent.setAction("play_bg_music");
+                startService(intent);
+            }
+        });
 
         pic11 = findViewById(R.id.imgs1);
         pic12 = findViewById(R.id.imgs2);
@@ -368,5 +400,29 @@ public class GameActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Intent intent = new Intent(GameActivity.this, MyMusicService.class);
+        intent.setAction("pause_bg_music");
+        startService(intent);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Intent intent = new Intent(GameActivity.this, MyMusicService.class);
+        intent.setAction("resume_bg_music");
+        startService(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("flagReturn", musicFlag);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }

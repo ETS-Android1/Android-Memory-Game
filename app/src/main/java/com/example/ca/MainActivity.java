@@ -1,7 +1,10 @@
 package com.example.ca;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -40,10 +44,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView progressText;
     //static Bitmap[] fetched;
     static ArrayList<Bitmap> selected = new ArrayList<Bitmap>();
+    protected static ActivityResultLauncher<Intent> rlGameActivity;
+    protected static boolean musicFlag = true;
+    ImageButton btnMusic;
+    Button startButton2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        startService(new Intent(MainActivity.this, MyMusicService.class));
+
+        rlGameActivity = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if(result.getResultCode() == AppCompatActivity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            musicFlag = data.getBooleanExtra("flagReturn", true);
+                        }
+                    }
+                }
+        );
+
+        btnMusic = findViewById(R.id.btnMusic);
+
+        if (musicFlag) {
+            btnMusic.setBackgroundResource(R.drawable.music_play);
+        }
+        else {
+            btnMusic.setBackgroundResource(R.drawable.music_stop);
+        }
+
+        btnMusic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (musicFlag) {
+                    btnMusic.setBackgroundResource(R.drawable.music_stop);
+                    musicFlag = false;
+                }
+                else  {
+                    btnMusic.setBackgroundResource(R.drawable.music_play);
+                    musicFlag = true;
+                }
+                Intent intent = new Intent(MainActivity.this, MyMusicService.class);
+                intent.setAction("play_bg_music");
+                startService(intent);
+            }
+        });
+
+
+
         filenames = new ArrayList<String>();
         //fetched = new Bitmap[20];
         progressBar = findViewById(R.id.progressBar);
@@ -58,6 +110,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             imgViews[i] = resource.getIdentifier(resName, "id", pkgName);
         }
         progressText = findViewById(R.id.txtProgress);
+
+
     }
 
     @Override
@@ -206,4 +260,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
         }
     }
+
+ /*   protected void registerForResult() {
+        rlGameActivity = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if(result.getResultCode() == AppCompatActivity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            musicFlag = data.getBooleanExtra("flagReturn", true);
+                        }
+                    }
+                }
+        );
+    }*/
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Intent intent = new Intent(MainActivity.this, MyMusicService.class);
+        intent.setAction("pause_bg_music");
+        startService(intent);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (musicFlag) {
+            btnMusic.setBackgroundResource(R.drawable.music_play);
+        }
+        else {
+            btnMusic.setBackgroundResource(R.drawable.music_stop);
+        }
+        Intent intent = new Intent(MainActivity.this, MyMusicService.class);
+        intent.setAction("resume_bg_music");
+        startService(intent);
+    }
+
 }
