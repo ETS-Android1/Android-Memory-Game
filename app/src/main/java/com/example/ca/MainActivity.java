@@ -5,6 +5,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -50,31 +51,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static boolean musicFlag;
     ImageButton btnMusic;
     ImageButton btnLeaderBoard;
+    SharedPreferences sharedPref;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        sharedPref = getSharedPreferences("music_flag", MODE_PRIVATE);
+        musicFlag = sharedPref.getBoolean("music_flag", musicFlag);
+
         startService(new Intent(MainActivity.this, MyMusicService.class));
+        if (musicFlag) {
+            Intent intent = new Intent(MainActivity.this, MyMusicService.class);
+            intent.setAction("play_bg_music");
+            startService(intent);
+        }
 
         findViewById(R.id.scrollText).setSelected(true);
-/*        rlGameActivity = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if(result.getResultCode() == AppCompatActivity.RESULT_OK) {
-                        Intent data = result.getData();
-                        if (data != null) {
-                            musicFlag = data.getBooleanExtra("flagReturn", true);
-                        }
-                    }
-                }
-        );*/
 
         btnMusic = findViewById(R.id.btnMusic);
-        Intent intent = getIntent();
-        musicFlag = intent.getBooleanExtra("musicFlag", true);
-
         if (musicFlag) {
             btnMusic.setBackgroundResource(R.drawable.music_play);
         }
@@ -88,14 +85,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (musicFlag) {
                     btnMusic.setBackgroundResource(R.drawable.music_stop);
                     musicFlag = false;
+                    Intent intent = new Intent(MainActivity.this, MyMusicService.class);
+                    intent.setAction("pause_bg_music");
+                    startService(intent);
                 }
                 else  {
                     btnMusic.setBackgroundResource(R.drawable.music_play);
                     musicFlag = true;
+                    Intent intent = new Intent(MainActivity.this, MyMusicService.class);
+                    intent.setAction("resume_bg_music");
+                    startService(intent);
                 }
-                Intent intent = new Intent(MainActivity.this, MyMusicService.class);
-                intent.setAction("play_bg_music");
-                startService(intent);
+                editor = sharedPref.edit();
+                editor.putBoolean("music_flag", musicFlag);
+                editor.commit();
             }
         });
 
@@ -103,9 +106,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnLeaderBoard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-/*                editor = sharedPref.edit();
+                editor = sharedPref.edit();
                 editor.putBoolean("music_flag", musicFlag);
-                editor.commit();*/
+                editor.commit();
                 Intent intent = new Intent(MainActivity.this, LeaderBoardActivity.class);
                 startActivity(intent);
             }
@@ -219,18 +222,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return null;
         }
         String img = "";
-        Pattern p_image;
-        Matcher m_image;
         List<String> pics = new ArrayList<String>();
-        String regEx_img = "<img.* src=\\s*(.*?)[^>]*?>";
-        p_image = Pattern.compile(regEx_img, Pattern.CASE_INSENSITIVE);
-        m_image = p_image.matcher(htmlStr);
-        while (m_image.find()) {
-            img = m_image.group();
-            Matcher m = Pattern.compile(" src\\s*=\\s*\"?(.*?)(\"|>|\\s+)").matcher(img);
-            while (m.find()) {
-                pics.add(m.group(1));
-            }
+        String regEx_img = "<img src=\\s*\"(.*?jpg)[^>]*?\">";
+        Pattern p_image = Pattern.compile(regEx_img, Pattern.CASE_INSENSITIVE);
+        Matcher m_image = p_image.matcher(htmlStr);
+        while (m_image.find() && pics.size() <= COUNT) {
+            img = m_image.group(1);
+            pics.add(img);
         }
         return pics;
     }
@@ -276,6 +274,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void clearCurrentImages() {
         Log.d("UserProcess", "clearing all images");
+        if (downloadingThread != null) {
+            downloadingThread.interrupt();
+            downloadingThread = null;
+        }
         File dir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         for (String path : filenames) {
             File file = new File(dir, path);
@@ -283,10 +285,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 file.delete();
             }
             filenames = new ArrayList<String>();
-        }
-        if (downloadingThread != null) {
-            downloadingThread.interrupt();
-            downloadingThread = null;
         }
         for(int i : imgViews) {
             Log.d("UserProcess", "clearing imgView " + i);
@@ -298,9 +296,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         progressBar.setProgress(0);
-        progressBar.invalidate();
         progressText.setText("0 out of 0 downloaded.");
-        progressText.invalidate();
 
     }
 
@@ -356,15 +352,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onResume() {
         super.onResume();
+        musicFlag = sharedPref.getBoolean("music_flag", musicFlag);
         if (musicFlag) {
             btnMusic.setBackgroundResource(R.drawable.music_play);
-        }
-        else {
+        } else {
             btnMusic.setBackgroundResource(R.drawable.music_stop);
         }
-        Intent intent = new Intent(MainActivity.this, MyMusicService.class);
-        intent.setAction("resume_bg_music");
-        startService(intent);
+        if (musicFlag) {
+            Intent intent = new Intent(MainActivity.this, MyMusicService.class);
+            intent.setAction("resume_bg_music");
+            startService(intent);
+        }
     }
 
 }

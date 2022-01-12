@@ -6,15 +6,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.media.AudioAttributes;
-import android.media.AudioManager;
 import android.media.SoundPool;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Locale;
 
 public class GameActivity extends AppCompatActivity  {
     private TextView score, timerText,textInfo;
@@ -33,7 +28,7 @@ public class GameActivity extends AppCompatActivity  {
     private int cardNumber = 1;
     private int match = 0;
     private Handler timerHandler;
-    protected static boolean musicFlag = true;
+    private boolean musicFlag;
     private ImageButton btnMusic;
     private int timerSeconds;
 
@@ -49,7 +44,6 @@ public class GameActivity extends AppCompatActivity  {
     private Button pauseButton;
     private Button resumeButton;
     private Button backButton;
-/*    private boolean timerIsRunning = true;*/
     Runnable timerRunnable;
     long millis;
     long currentSystemTime;
@@ -76,9 +70,11 @@ public class GameActivity extends AppCompatActivity  {
         startTimer();
 
         btnMusic = findViewById(R.id.btnMusic);
-        Intent intent = getIntent();
 
-        musicFlag = intent.getBooleanExtra("musicFlag", true);
+        sharedPref = getSharedPreferences("music_flag", MODE_PRIVATE);
+        editor = sharedPref.edit();
+
+        musicFlag = sharedPref.getBoolean("music_flag", musicFlag);
         if (musicFlag) {
             btnMusic.setBackgroundResource(R.drawable.music_play);
         }
@@ -92,14 +88,20 @@ public class GameActivity extends AppCompatActivity  {
                 if (musicFlag) {
                     btnMusic.setBackgroundResource(R.drawable.music_stop);
                     musicFlag = false;
+                    Intent intent = new Intent(GameActivity.this, MyMusicService.class);
+                    intent.setAction("pause_bg_music");
+                    startService(intent);
                 }
                 else  {
                     btnMusic.setBackgroundResource(R.drawable.music_play);
                     musicFlag = true;
+                    Intent intent = new Intent(GameActivity.this, MyMusicService.class);
+                    intent.setAction("resume_bg_music");
+                    startService(intent);
                 }
-                Intent intent = new Intent(GameActivity.this, MyMusicService.class);
-                intent.setAction("play_bg_music");
-                startService(intent);
+
+                editor.putBoolean("music_flag", musicFlag);
+                editor.commit();
             }
         });
 
@@ -110,6 +112,9 @@ public class GameActivity extends AppCompatActivity  {
                 pauseForeground.setVisibility(View.VISIBLE);
                 resumeButton.setVisibility(View.VISIBLE);
                 pauseButton.setVisibility(View.INVISIBLE);
+                Intent intent = new Intent(GameActivity.this, MyMusicService.class);
+                intent.setAction("pause_bg_music");
+                startService(intent);
                 stopTimer();
                 removeListener();
             }
@@ -119,10 +124,14 @@ public class GameActivity extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
                 isPaused = false;
-/*                timerIsRunning = true;*/
                 pauseForeground.setVisibility(View.INVISIBLE);
                 pauseButton.setVisibility(View.VISIBLE);
                 resumeButton.setVisibility(View.INVISIBLE);
+                if (musicFlag) {
+                    Intent intent = new Intent(GameActivity.this, MyMusicService.class);
+                    intent.setAction("resume_bg_music");
+                    startService(intent);
+                }
                 startTimer();
                 addListener();
             }
@@ -166,21 +175,16 @@ public class GameActivity extends AppCompatActivity  {
         cardFront();
         Collections.shuffle(Arrays.asList(cardArray));
         addListener();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AudioAttributes audioAttributes = new AudioAttributes
-                    .Builder()
-                    .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .build();
+        AudioAttributes audioAttributes = new AudioAttributes
+                .Builder()
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build();
             soundpool = new SoundPool
-                    .Builder()
-                    .setMaxStreams(3)
-                    .setAudioAttributes(audioAttributes)
-                    .build();
-        }
-        else {
-            soundpool = new SoundPool(3, AudioManager.STREAM_MUSIC, 0);
-        }
+                .Builder()
+                .setMaxStreams(3)
+                .setAudioAttributes(audioAttributes)
+                .build();
         correct = soundpool.load(this, R.raw.correct, 1);
         fail = soundpool.load(this, R.raw.fail, 1);
         won = soundpool.load(this, R.raw.won, 1);
@@ -498,7 +502,8 @@ public class GameActivity extends AppCompatActivity  {
             editor.commit();
 
             soundpool.play(won, 1, 1, 1, 0, 1);
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            Intent intent = new Intent(getApplicationContext(), GameCompletionActivity.class);
+            intent.putExtra("time",millis);
             startActivity(intent);
         }
     }
@@ -552,24 +557,6 @@ public class GameActivity extends AppCompatActivity  {
 
     }
 
-/*        timerHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                int hours = timerSeconds / 3600;
-                int minutes = (timerSeconds % 3600) / 60;
-                int seconds = timerSeconds % 60;
-                String time = String.format(Locale.getDefault(), "%02d:%02d:%02d",
-                        hours, minutes, seconds);
-                timerText.setText(time);
-                if (timerIsRunning) {
-                    timerSeconds++;
-                    timerHandler.postDelayed(this, 1000);
-                }
-            }
-        });
-
-
-    }*/
     private void stopTimer() {
         timerHandler.removeCallbacks(timerRunnable);
         elapsedTimeOnPause = elapsedTimeOnPause + (System.currentTimeMillis() - currentSystemTime);
@@ -584,6 +571,7 @@ public class GameActivity extends AppCompatActivity  {
                 pauseForeground.setVisibility(View.VISIBLE);
                 pauseButton.setText("Resume");
                 stopTimer();
+
             }
         });
     }
@@ -593,11 +581,11 @@ public class GameActivity extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
                 isPaused = false;
-/*                timerIsRunning = true;*/
                 pauseForeground.setVisibility(View.INVISIBLE);
                 pauseButton.setText("Pause");
                 currentSystemTime = System.currentTimeMillis();
                 timerHandler.post(timerRunnable);
+
             }
         });
     }
@@ -613,17 +601,17 @@ public class GameActivity extends AppCompatActivity  {
     @Override
     public void onResume() {
         super.onResume();
-        Intent intent = new Intent(GameActivity.this, MyMusicService.class);
-        intent.setAction("resume_bg_music");
-        startService(intent);
-    }
-
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent();
-        intent.putExtra("flagReturn", musicFlag);
-        setResult(RESULT_OK, intent);
-        finish();
+        musicFlag = sharedPref.getBoolean("music_flag", musicFlag);
+        if (musicFlag) {
+            btnMusic.setBackgroundResource(R.drawable.music_play);
+        } else {
+            btnMusic.setBackgroundResource(R.drawable.music_stop);
+        }
+        if (musicFlag && !isPaused) {
+            Intent intent = new Intent(GameActivity.this, MyMusicService.class);
+            intent.setAction("resume_bg_music");
+            startService(intent);
+        }
     }
 
 
