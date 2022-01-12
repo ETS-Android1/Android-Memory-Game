@@ -37,37 +37,37 @@ public class myRunnable implements Runnable{
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(MainActivity.selected.size() <= 6){
-                    Bitmap bm = fetched[i-1];
-                    startButton.setVisibility(View.INVISIBLE);
-                    if(MainActivity.selected.contains(bm)){
-                        iv.setBackgroundResource(0);
-                        MainActivity.selected.remove(bm);
-                        TextView tv = v.getRootView().findViewById(R.id.txtNumberSelected);
-                        tv.setText(MainActivity.selected.size()+" selected");
+                Button startButton = v.getRootView().findViewById(R.id.startButton);
+                Bitmap bm = fetched[i-1];
+                int count = MainActivity.selected.size();
+                if(MainActivity.selected.contains(bm)){
+                    iv.setBackgroundResource(0);
+                    MainActivity.selected.remove(bm);
+                }
+                else if(count < 6){
+                    iv.setBackgroundResource(R.drawable.border);
+                    MainActivity.selected.add(bm);
                     }
-                    else if (!MainActivity.selected.contains(bm)){
-                        iv.setBackgroundResource(R.drawable.border);
-                        MainActivity.selected.add(bm);
-                        TextView tv = v.getRootView().findViewById(R.id.txtNumberSelected);
-                        tv.setText(MainActivity.selected.size()+" selected");
-                        if(MainActivity.selected.size() == 6){
-                            Button startButton = v.getRootView().findViewById(R.id.startButton);
-                            startButton.setVisibility(View.VISIBLE);
-                            startButton.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v){
-                                    Intent intent = new Intent(v.getContext(), GameActivity.class);
-                                    v.getContext().startActivity(intent);
-                                }
-                            });
-                        }
+                int newCount = MainActivity.selected.size();
+                if(newCount == 6){
+                    startButton.setVisibility(View.VISIBLE);
+                }
+                else {
+                    if (startButton != null) {
+                        startButton.setVisibility(View.INVISIBLE);
                     }
+                }
+                TextView tv = v.getRootView().findViewById(R.id.txtNumberSelected);
+                if (newCount > 0) {
+                    tv.setVisibility(View.VISIBLE);
+                    tv.setText(MainActivity.selected.size() + " selected");
+                }
+                else {
+                    tv.setVisibility(View.INVISIBLE);
                 }
             }
         });
     }
-
     public  ImageView getImageView(View v, int i){
         ImageView iv = null;
         switch (i){
