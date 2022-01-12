@@ -1,6 +1,7 @@
 package com.example.ca;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -8,14 +9,31 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class GameCompletionActivity extends AppCompatActivity implements View.OnClickListener{
+public class    GameCompletionActivity extends AppCompatActivity implements View.OnClickListener{
 
     TextView time;
     Button homeButton, boardButton;
+    SharedPreferences sharedPref;
+    private boolean musicFlag;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_completion);
+
+        sharedPref = getSharedPreferences("music_flag", MODE_PRIVATE);
+        musicFlag = sharedPref.getBoolean("music_flag", musicFlag);
+
+        if (!musicFlag) {
+            Intent intent = new Intent(GameCompletionActivity.this, MyMusicService.class);
+            intent.setAction("pause_bg_music");
+            startService(intent);
+        }
+        else {
+            Intent intent = new Intent(GameCompletionActivity.this, MyMusicService.class);
+            intent.setAction("resume_bg_music");
+            startService(intent);
+        }
 
         homeButton = findViewById(R.id.homeBtn);
         homeButton.setOnClickListener(this);
@@ -46,4 +64,25 @@ public class GameCompletionActivity extends AppCompatActivity implements View.On
             startActivity(intent);
         }
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Intent intent = new Intent(GameCompletionActivity.this, MyMusicService.class);
+        intent.setAction("pause_bg_music");
+        startService(intent);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        musicFlag = sharedPref.getBoolean("music_flag", musicFlag);
+        if (musicFlag) {
+            Intent intent = new Intent(GameCompletionActivity.this, MyMusicService.class);
+            intent.setAction("resume_bg_music");
+            startService(intent);
+        }
+    }
+
+
 }
