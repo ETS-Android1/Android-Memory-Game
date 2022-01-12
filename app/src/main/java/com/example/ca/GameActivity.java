@@ -502,7 +502,8 @@ public class GameActivity extends AppCompatActivity  {
             editor.commit();
 
             soundpool.play(won, 1, 1, 1, 0, 1);
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            Intent intent = new Intent(getApplicationContext(), GameCompletionActivity.class);
+            intent.putExtra("time",millis);
             startActivity(intent);
         }
     }
