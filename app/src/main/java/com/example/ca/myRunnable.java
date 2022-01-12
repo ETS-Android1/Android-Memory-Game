@@ -31,6 +31,9 @@ public class myRunnable implements Runnable{
         TextView tv = v.getRootView().findViewById(R.id.txtProgress);
         tv.setText(i + " out of 20 downloaded");
 
+        Button startButton = v.getRootView().findViewById(R.id.startButton);
+        startButton.setVisibility(View.INVISIBLE);
+
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
