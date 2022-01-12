@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String regEx_img = "<img src=\\s*\"(.*?jpg)[^>]*?\">";
         Pattern p_image = Pattern.compile(regEx_img, Pattern.CASE_INSENSITIVE);
         Matcher m_image = p_image.matcher(htmlStr);
-        while (m_image.find() && pics.size() <= COUNT) {
+        while (m_image.find() && pics.size() <= COUNT + 1) {
             img = m_image.group(1);
             pics.add(img);
         }
