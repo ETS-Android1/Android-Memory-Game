@@ -36,7 +36,13 @@ public class myRunnable implements Runnable{
             public void onClick(View v) {
                 if(MainActivity.selected.size() < 6){
                     Bitmap bm = fetched[i-1];
-                    if(!MainActivity.selected.contains(bm)){
+                    if(MainActivity.selected.contains(bm)){
+                        iv.setBackgroundResource(0);
+                        MainActivity.selected.remove(bm);
+                        TextView tv = v.getRootView().findViewById(R.id.txtNumberSelected);
+                        tv.setText(MainActivity.selected.size()+" selected");
+                    }
+                    else if (!MainActivity.selected.contains(bm)){
                         iv.setBackgroundResource(R.drawable.border);
                         MainActivity.selected.add(bm);
                         TextView tv = v.getRootView().findViewById(R.id.txtNumberSelected);
