@@ -26,12 +26,14 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="match_parent"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
-        android:text="Enter URL and select 6 pictures to start the game"
         android:gravity="center"
+        android:text="Enter URL and select 6 pictures to start the game"
+        android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/weclcomeScrn"
         app:layout_constraintVertical_bias="0.0" />
 
