@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startService(intent);
         }
 
-        findViewById(R.id.scrollText).setSelected(true);
 
         btnMusic = findViewById(R.id.btnMusic);
         if (musicFlag) {
