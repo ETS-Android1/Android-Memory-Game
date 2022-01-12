@@ -3,5 +3,5 @@
     <string name="scrolling_text">Welcome to the Memory Game! Please enter the website URL and choose 6 pictures~</string>
     <string name="paused_text">PAUSED</string>
     <string name="fail">oops! They are not matched!</string>
-    <string name="correct">Well down! Please go ahead!</string>
+    <string name="correct">Well done! Please go ahead!</string>
 </resources>
