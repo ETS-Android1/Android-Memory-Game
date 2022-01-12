@@ -1,8 +1,10 @@
 package com.example.ca;
 
+import static com.example.ca.MainActivity.musicFlag;
+import static com.example.ca.MainActivity.rlGameActivity;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
@@ -11,6 +13,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -21,47 +25,52 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Locale;
 
-public class GameActivity extends AppCompatActivity {
-    TextView score, timerText;
-    int firstCard, secondCard;
-    int firstClick, secondClick;
-    int cardNumber = 1;
-    int match = 0;
-    Handler timerHandler;
-    Runnable timerRunnable;
-    Long millis;
-    Long bestTime1;
-    Long bestTime2;
-    Long bestTime3;
-    private boolean musicFlag;
-    ImageButton btnMusic;
-    SharedPreferences sharedPref;
-    SharedPreferences.Editor editor;
+public class GameActivity extends AppCompatActivity  {
+    private TextView score, timerText,textInfo;
+    private int firstCard, secondCard;
+    private int firstClick, secondClick;
+    private int cardNumber = 1;
+    private int match = 0;
+    private Handler timerHandler;
+    protected static boolean musicFlag = true;
+    private ImageButton btnMusic;
+    private int timerSeconds;
 
-    ImageView pic11,pic12,pic13,pic21,pic22,pic23,pic31,pic32,pic33,pic41,pic42,pic43;
+    private ImageView pic11,pic12,pic13,pic21,pic22,pic23,pic31,pic32,pic33,pic41,pic42,pic43;
 
-    Integer [] cardArray = {11,12,13,14,15,16,11,12,13,14,15,16};
+    private Integer [] cardArray = {11,12,13,14,15,16,11,12,13,14,15,16};
 
-    Bitmap image11,image12,image13,image14,image15,image16,image21,image22,image23,image24,image25,image26;
-    SoundPool soundpool;
-    int correct, fail, won;
+    private Bitmap image11,image12,image13,image14,image15,image16,image21,image22,image23,image24,image25,image26;
+    private SoundPool soundpool;
+    private int correct, fail, won;
+    private TextView pauseForeground;
+    private boolean isPaused;
+    private Button pauseButton;
+    private Button resumeButton;
+    private Button backButton;
+    private boolean timerIsRunning = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
 
+
         score = findViewById(R.id.matchProgress);
+        pauseForeground = findViewById(R.id.pauseForeground);
+        pauseButton = findViewById(R.id.pauseButton);
+        resumeButton = findViewById(R.id.resumeButton);
+        backButton = findViewById(R.id.backButton);
+        textInfo = findViewById(R.id.textInfo);
 
         startTimer();
 
         btnMusic = findViewById(R.id.btnMusic);
+        Intent intent = getIntent();
 
-        sharedPref = getSharedPreferences("music_flag", MODE_PRIVATE);
-        editor = sharedPref.edit();
-
-        musicFlag = sharedPref.getBoolean("music_flag", musicFlag);
+        musicFlag = intent.getBooleanExtra("musicFlag", true);
         if (musicFlag) {
             btnMusic.setBackgroundResource(R.drawable.music_play);
         }
@@ -75,21 +84,50 @@ public class GameActivity extends AppCompatActivity {
                 if (musicFlag) {
                     btnMusic.setBackgroundResource(R.drawable.music_stop);
                     musicFlag = false;
-                    Intent intent = new Intent(GameActivity.this, MyMusicService.class);
-                    intent.setAction("pause_bg_music");
-                    startService(intent);
                 }
                 else  {
                     btnMusic.setBackgroundResource(R.drawable.music_play);
                     musicFlag = true;
-                    Intent intent = new Intent(GameActivity.this, MyMusicService.class);
-                    intent.setAction("resume_bg_music");
-                    startService(intent);
                 }
-                editor.putBoolean("music_flag", musicFlag);
-                editor.commit();
+                Intent intent = new Intent(GameActivity.this, MyMusicService.class);
+                intent.setAction("play_bg_music");
+                startService(intent);
             }
         });
+
+        pauseButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                isPaused = true;
+                pauseForeground.setVisibility(View.VISIBLE);
+                resumeButton.setVisibility(View.VISIBLE);
+                pauseButton.setVisibility(View.INVISIBLE);
+                stopTimer();
+                removeListener();
+            }
+        });
+
+        resumeButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                isPaused = false;
+                timerIsRunning = true;
+                pauseForeground.setVisibility(View.INVISIBLE);
+                pauseButton.setVisibility(View.VISIBLE);
+                resumeButton.setVisibility(View.INVISIBLE);
+                startTimer();
+                addListener();
+            }
+        });
+
+        backButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GameActivity.this,MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
 
         pic11 = findViewById(R.id.imgs1);
         pic12 = findViewById(R.id.imgs2);
@@ -118,9 +156,44 @@ public class GameActivity extends AppCompatActivity {
         pic43.setTag("11");
 
         cardFront();
-
         Collections.shuffle(Arrays.asList(cardArray));
+        addListener();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AudioAttributes audioAttributes = new AudioAttributes
+                    .Builder()
+                    .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build();
+            soundpool = new SoundPool
+                    .Builder()
+                    .setMaxStreams(3)
+                    .setAudioAttributes(audioAttributes)
+                    .build();
+        }
+        else {
+            soundpool = new SoundPool(3, AudioManager.STREAM_MUSIC, 0);
+        }
+        correct = soundpool.load(this, R.raw.correct, 1);
+        fail = soundpool.load(this, R.raw.fail, 1);
+        won = soundpool.load(this, R.raw.won, 1);
 
+    }
+
+    public void removeListener() {
+        pic11.setOnClickListener(null);
+        pic12.setOnClickListener(null);
+        pic13.setOnClickListener(null);
+        pic21.setOnClickListener(null);
+        pic22.setOnClickListener(null);
+        pic23.setOnClickListener(null);
+        pic31.setOnClickListener(null);
+        pic32.setOnClickListener(null);
+        pic33.setOnClickListener(null);
+        pic41.setOnClickListener(null);
+        pic42.setOnClickListener(null);
+        pic43.setOnClickListener(null);
+    }
+    public void addListener(){
         pic11.setOnClickListener(view -> {
             int card = Integer.parseInt((String) view.getTag());
             setImage(pic11, card);
@@ -180,25 +253,6 @@ public class GameActivity extends AppCompatActivity {
             int card = Integer.parseInt((String) view.getTag());
             setImage(pic43, card);
         });
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AudioAttributes audioAttributes = new AudioAttributes
-                .Builder()
-                .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .build();
-            soundpool = new SoundPool
-                    .Builder()
-                    .setMaxStreams(3)
-                    .setAudioAttributes(audioAttributes)
-                    .build();
-        }
-        else {
-            soundpool = new SoundPool(3, AudioManager.STREAM_MUSIC, 0);
-        }
-        correct = soundpool.load(this, R.raw.correct, 1);
-        fail = soundpool.load(this, R.raw.fail, 1);
-        won = soundpool.load(this, R.raw.won, 1);
-
     }
 
     private void setImage(ImageView imageView, int card){
@@ -286,6 +340,7 @@ public class GameActivity extends AppCompatActivity {
     private void calculate(){
         ArrayList<ImageView> imageArray = new ArrayList<>(Arrays.asList(pic11,pic12,pic13,pic21,pic22,pic23,pic31,pic32,pic33,pic41,pic42,pic43));
         if(firstCard == secondCard){
+            textInfo.setText(R.string.correct);
             soundpool.play(correct, 1, 1, 1, 0, 1);
             switch (firstClick){
                 case 0:
@@ -371,6 +426,7 @@ public class GameActivity extends AppCompatActivity {
 
         else {
             soundpool.play(fail, 1, 1, 1, 0, 1);
+            textInfo.setText(R.string.fail);
             for (int i = 0; i < imageArray.size(); i++){
                 if(!imageArray.get(i).isSelected()){
                     imageArray.get(i).setImageResource(R.drawable.cardback);
@@ -389,58 +445,9 @@ public class GameActivity extends AppCompatActivity {
 
     private void checkGameEnd(){
         if (match == 6) {
-            timerHandler.removeCallbacks(timerRunnable);
-            sharedPref = getSharedPreferences("best_time", MODE_PRIVATE);
-            bestTime1 = sharedPref.getLong("best_time1", 0);
-            bestTime2 = sharedPref.getLong("best_time2", 0);
-            bestTime3 = sharedPref.getLong("best_time3", 0);
-
-            if (bestTime1 == 0) {
-                bestTime1 = millis;
-            }
-
-            else if (bestTime1 != 0 && bestTime2 == 0 && millis <= bestTime1)  {
-                bestTime2 = bestTime1;
-                bestTime1 = millis;
-            }
-
-            else if (bestTime1 != 0 &&  bestTime2 == 0 && millis > bestTime1) {
-                bestTime2 = millis;
-            }
-
-            else if (bestTime1 != 0 && bestTime2 != 0 && millis <= bestTime1) {
-                bestTime3 = bestTime2;
-                bestTime2 = bestTime1;
-                bestTime1 = millis;
-            }
-
-            else if (bestTime1 != 0 && bestTime2 != 0 && millis > bestTime1 && millis <= bestTime2) {
-                bestTime3 = bestTime2;
-                bestTime2 = millis;
-            }
-
-            else if (bestTime1 != 0 && bestTime2 != 0 && millis > bestTime1 && millis > bestTime2 && bestTime3 == 0) {
-                bestTime3 = millis;
-            }
-
-            else if (bestTime1 != 0 && bestTime2 != 0 && bestTime3 != 0 && millis <= bestTime3) {
-                bestTime3 = millis;
-            }
-
-            editor = sharedPref.edit();
-            editor.putLong("best_time1", bestTime1);
-            editor.putLong("best_time2", bestTime2);
-            editor.putLong("best_time3", bestTime3);
-            editor.commit();
-
             soundpool.play(won, 1, 1, 1, 0, 1);
-
-            sharedPref = getSharedPreferences("music_flag", MODE_PRIVATE);
-            editor = sharedPref.edit();
-            editor.putBoolean("music_flag",musicFlag);
-            editor.commit();
-
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.putExtra("musicFlag", musicFlag);
             startActivity(intent);
         }
     }
@@ -456,42 +463,85 @@ public class GameActivity extends AppCompatActivity {
         }
         images.addAll(newBit);
 
-       image11 = images.get(0);
-       image12 = images.get(1);
-       image13 = images.get(2);
-       image14 = images.get(3);
-       image15 = images.get(4);
-       image16 = images.get(5);
-       image21 = images.get(6);
-       image22 = images.get(7);
-       image23 = images.get(8);
-       image24 = images.get(9);
-       image25 = images.get(10);
-       image26 = images.get(11);
+        image11 = images.get(0);
+        image12 = images.get(1);
+        image13 = images.get(2);
+        image14 = images.get(3);
+        image15 = images.get(4);
+        image16 = images.get(5);
+        image21 = images.get(6);
+        image22 = images.get(7);
+        image23 = images.get(8);
+        image24 = images.get(9);
+        image25 = images.get(10);
+        image26 = images.get(11);
 
     }
 
     private void startTimer() {
         timerText = findViewById(R.id.timer);
         timerHandler = new Handler();
-        long currentSystemTime = System.currentTimeMillis();
-
-        timerRunnable = new Runnable() {
+       /* long currentSystemTime = System.currentTimeMillis();
+        timerHandler.post(new Runnable() {
             @Override
             public void run() {
-                millis = System.currentTimeMillis() - currentSystemTime;
+                long millis = System.currentTimeMillis() - currentSystemTime;
                 int seconds = (int) (millis / 1000);
                 int minutes = seconds / 60;
                 int hours = minutes / 60;
                 seconds = seconds % 60;
 
                 timerText.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
+                if(timerIsRunning){
                 timerHandler.postDelayed(this, 1000);
+            }}
+        });*/
+        timerHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                int hours = timerSeconds / 3600;
+                int minutes = (timerSeconds % 3600) / 60;
+                int seconds = timerSeconds % 60;
+                String time = String.format(Locale.getDefault(), "%02d:%02d:%02d",
+                        hours, minutes, seconds);
+                timerText.setText(time);
+                if (timerIsRunning) {
+                    timerSeconds++;
+                    timerHandler.postDelayed(this, 1000);
+                }
             }
-        };
+        });
 
-        timerHandler.post(timerRunnable);
 
+    }
+    private void stopTimer() {
+        timerIsRunning = false;
+    }
+
+
+    public void pauseGame() {
+        pauseButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                isPaused = true;
+                pauseForeground.setVisibility(View.VISIBLE);
+                pauseButton.setText("Resume");
+                stopTimer();
+            }
+        });
+    }
+
+    public void resumeGame() {
+        pauseButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                isPaused = false;
+                timerIsRunning = true;
+                pauseForeground.setVisibility(View.INVISIBLE);
+                pauseButton.setText("Pause");
+                startTimer();
+            }
+        });
     }
 
     @Override
@@ -505,17 +555,23 @@ public class GameActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        musicFlag = sharedPref.getBoolean("music_flag", musicFlag);
-        if (musicFlag) {
-            btnMusic.setBackgroundResource(R.drawable.music_play);
-        } else {
-            btnMusic.setBackgroundResource(R.drawable.music_stop);
-        }
-        if (musicFlag) {
-            Intent intent = new Intent(GameActivity.this, MyMusicService.class);
-            intent.setAction("resume_bg_music");
-            startService(intent);
-        }
+        Intent intent = new Intent(GameActivity.this, MyMusicService.class);
+        intent.setAction("resume_bg_music");
+        startService(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("flagReturn", musicFlag);
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
 }

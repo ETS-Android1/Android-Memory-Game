@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.webkit.URLUtil;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         startService(new Intent(MainActivity.this, MyMusicService.class));
 
+        findViewById(R.id.scrollText).setSelected(true);
         rlGameActivity = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -330,19 +332,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
- /*   protected void registerForResult() {
-        rlGameActivity = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if(result.getResultCode() == AppCompatActivity.RESULT_OK) {
-                        Intent data = result.getData();
-                        if (data != null) {
-                            musicFlag = data.getBooleanExtra("flagReturn", true);
-                        }
-                    }
-                }
-        );
-    }*/
 
     @Override
     public void onPause() {

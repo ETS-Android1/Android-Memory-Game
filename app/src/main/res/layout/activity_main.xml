@@ -11,18 +11,20 @@
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:hint="Input URL here"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.05"
-        app:layout_constraintWidth_percent="0.75" />
+        app:layout_constraintWidth_percent="0.74" />
 
     <Button
         android:id="@+id/btnSubmitUrl"
         android:layout_width="0dp"
-        android:layout_height="36dp"
+        android:layout_height="40dp"
         android:backgroundTint="#2962FF"
         android:text="Fetch"
+        android:padding="1dp"
         app:layout_constraintBottom_toBottomOf="@id/txtUrl"
         app:layout_constraintLeft_toRightOf="@id/txtUrl"
         app:layout_constraintTop_toTopOf="@id/txtUrl"
@@ -36,7 +38,6 @@
         app:layout_constraintLeft_toRightOf="@id/btnSubmitUrl"
         app:layout_constraintTop_toTopOf="parent"
         android:background="@drawable/music_play"
-        android:scaleType="fitXY"
         android:layout_marginRight="40dp"
         />
 
@@ -56,7 +57,9 @@
         android:id="@+id/img1"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#00B8D4"
+        android:padding="4dp"
+        android:scaleType="fitXY"
+        android:background="#f2f2f2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent="0.12"
         app:layout_constraintHorizontal_bias="0.02"
@@ -67,234 +70,12 @@
         app:layout_constraintWidth_percent="0.22" />
 
     <ImageView
-        android:id="@+id/img5"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#00B8D4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.12"
-        app:layout_constraintHorizontal_bias="0.02"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.32"
-        app:layout_constraintWidth_percent="0.22" />
-
-    <ImageView
-        android:id="@+id/img6"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#00B8D4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.12"
-        app:layout_constraintHorizontal_bias="0.34"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.32"
-        app:layout_constraintWidth_percent="0.22" />
-
-    <ImageView
-        android:id="@+id/img7"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#00B8D4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.12"
-        app:layout_constraintHorizontal_bias="0.66"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.32"
-        app:layout_constraintWidth_percent="0.22" />
-
-    <ImageView
-        android:id="@+id/img8"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#00B8D4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.12"
-        app:layout_constraintHorizontal_bias="0.98"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.32"
-        app:layout_constraintWidth_percent="0.22" />
-
-    <ImageView
-        android:id="@+id/img9"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#00B8D4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.12"
-        app:layout_constraintHorizontal_bias="0.02"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.48"
-        app:layout_constraintWidth_percent="0.22" />
-
-    <ImageView
-        android:id="@+id/img10"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#00B8D4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.12"
-        app:layout_constraintHorizontal_bias="0.34"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.48"
-        app:layout_constraintWidth_percent="0.22" />
-
-    <ImageView
-        android:id="@+id/img11"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#00B8D4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.12"
-        app:layout_constraintHorizontal_bias="0.66"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.48"
-        app:layout_constraintWidth_percent="0.22" />
-
-    <ImageView
-        android:id="@+id/img12"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#00B8D4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.12"
-        app:layout_constraintHorizontal_bias="0.98"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.48"
-        app:layout_constraintWidth_percent="0.22" />
-
-    <ImageView
-        android:id="@+id/img13"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#00B8D4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.12"
-        app:layout_constraintHorizontal_bias="0.02"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.64"
-        app:layout_constraintWidth_percent="0.22" />
-
-    <ImageView
-        android:id="@+id/img14"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#00B8D4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.12"
-        app:layout_constraintHorizontal_bias="0.34"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.64"
-        app:layout_constraintWidth_percent="0.22" />
-
-    <ImageView
-        android:id="@+id/img15"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#00B8D4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.12"
-        app:layout_constraintHorizontal_bias="0.66"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.64"
-        app:layout_constraintWidth_percent="0.22" />
-
-    <ImageView
-        android:id="@+id/img16"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#00B8D4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.12"
-        app:layout_constraintHorizontal_bias="0.98"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.64"
-        app:layout_constraintWidth_percent="0.22" />
-
-    <ImageView
-        android:id="@+id/img17"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#00B8D4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.12"
-        app:layout_constraintHorizontal_bias="0.02"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.8"
-        app:layout_constraintWidth_percent="0.22" />
-
-    <ImageView
-        android:id="@+id/img18"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#00B8D4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.12"
-        app:layout_constraintHorizontal_bias="0.34"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.8"
-        app:layout_constraintWidth_percent="0.22" />
-
-    <ImageView
-        android:id="@+id/img19"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#00B8D4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.12"
-        app:layout_constraintHorizontal_bias="0.66"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.8"
-        app:layout_constraintWidth_percent="0.22" />
-
-    <ImageView
-        android:id="@+id/img20"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#00B8D4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.12"
-        app:layout_constraintHorizontal_bias="0.98"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.8"
-        app:layout_constraintWidth_percent="0.22" />
-
-    <ImageView
         android:id="@+id/img2"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#00B8D4"
+        android:padding="4dp"
+        android:scaleType="fitXY"
+        android:background="#f2f2f2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent="0.12"
         app:layout_constraintHorizontal_bias="0.34"
@@ -308,7 +89,9 @@
         android:id="@+id/img3"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#00B8D4"
+        android:padding="4dp"
+        android:scaleType="fitXY"
+        android:background="#f2f2f2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent="0.12"
         app:layout_constraintHorizontal_bias="0.66"
@@ -322,7 +105,9 @@
         android:id="@+id/img4"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#00B8D4"
+        android:padding="4dp"
+        android:scaleType="fitXY"
+        android:background="#f2f2f2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent="0.12"
         app:layout_constraintHorizontal_bias="0.98"
@@ -330,6 +115,288 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.16"
+        app:layout_constraintWidth_percent="0.22" />
+
+    <ImageView
+        android:id="@+id/img5"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="4dp"
+        android:scaleType="fitXY"
+        android:background="#f2f2f2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintHorizontal_bias="0.02"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.32"
+        app:layout_constraintWidth_percent="0.22" />
+
+    <ImageView
+        android:id="@+id/img6"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="4dp"
+        android:scaleType="fitXY"
+        android:background="#f2f2f2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintHorizontal_bias="0.34"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.32"
+        app:layout_constraintWidth_percent="0.22" />
+
+    <ImageView
+        android:id="@+id/img7"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="4dp"
+        android:scaleType="fitXY"
+        android:background="#f2f2f2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintHorizontal_bias="0.66"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.32"
+        app:layout_constraintWidth_percent="0.22" />
+
+    <TextView
+        android:id="@+id/scrollText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        android:text="@string/scrolling_text"
+        android:textColor="#000000"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="52dp"
+        android:layout_height="48dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/logo" />
+
+    <ImageView
+        android:id="@+id/img8"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="4dp"
+        android:scaleType="fitXY"
+        android:background="#f2f2f2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintHorizontal_bias="0.98"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.32"
+        app:layout_constraintWidth_percent="0.22" />
+
+    <ImageView
+        android:id="@+id/img9"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="4dp"
+        android:scaleType="fitXY"
+        android:background="#f2f2f2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintHorizontal_bias="0.02"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.48"
+        app:layout_constraintWidth_percent="0.22" />
+
+    <ImageView
+        android:id="@+id/img10"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="4dp"
+        android:scaleType="fitXY"
+        android:background="#f2f2f2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintHorizontal_bias="0.34"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.48"
+        app:layout_constraintWidth_percent="0.22" />
+
+    <ImageView
+        android:id="@+id/img11"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="4dp"
+        android:scaleType="fitXY"
+        android:background="#f2f2f2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintHorizontal_bias="0.66"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.48"
+        app:layout_constraintWidth_percent="0.22" />
+
+    <ImageView
+        android:id="@+id/img12"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="4dp"
+        android:scaleType="fitXY"
+        android:background="#f2f2f2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintHorizontal_bias="0.98"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.48"
+        app:layout_constraintWidth_percent="0.22" />
+
+    <ImageView
+        android:id="@+id/img13"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="4dp"
+        android:scaleType="fitXY"
+        android:background="#f2f2f2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintHorizontal_bias="0.02"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.64"
+        app:layout_constraintWidth_percent="0.22" />
+
+    <ImageView
+        android:id="@+id/img14"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="4dp"
+        android:scaleType="fitXY"
+        android:background="#f2f2f2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintHorizontal_bias="0.34"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.64"
+        app:layout_constraintWidth_percent="0.22" />
+
+    <ImageView
+        android:id="@+id/img15"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="4dp"
+        android:scaleType="fitXY"
+        android:background="#f2f2f2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintHorizontal_bias="0.66"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.64"
+        app:layout_constraintWidth_percent="0.22" />
+
+    <ImageView
+        android:id="@+id/img16"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="4dp"
+        android:scaleType="fitXY"
+        android:background="#f2f2f2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintHorizontal_bias="0.98"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.64"
+        app:layout_constraintWidth_percent="0.22" />
+
+    <ImageView
+        android:id="@+id/img17"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="4dp"
+        android:scaleType="fitXY"
+        android:background="#f2f2f2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintHorizontal_bias="0.02"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.8"
+        app:layout_constraintWidth_percent="0.22" />
+
+    <ImageView
+        android:id="@+id/img18"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="4dp"
+        android:scaleType="fitXY"
+        android:background="#f2f2f2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintHorizontal_bias="0.34"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.8"
+        app:layout_constraintWidth_percent="0.22" />
+
+    <ImageView
+        android:id="@+id/img19"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="4dp"
+        android:scaleType="fitXY"
+        android:background="#f2f2f2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintHorizontal_bias="0.66"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.8"
+        app:layout_constraintWidth_percent="0.22" />
+
+    <ImageView
+        android:id="@+id/img20"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="4dp"
+        android:scaleType="fitXY"
+        android:background="#f2f2f2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintHorizontal_bias="0.98"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.8"
         app:layout_constraintWidth_percent="0.22" />
 
     <TextView
@@ -368,5 +435,6 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.85" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
