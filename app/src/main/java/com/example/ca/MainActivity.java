@@ -4,6 +4,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -14,6 +15,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.EditText;
@@ -139,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (v.getId() == submitButton.getId()) {
             EditText et = findViewById(R.id.txtUrl);
             String url = et.getText().toString();
+            closeKeyboard();
 
             if (URLUtil.isValidUrl(url)){
                 clearCurrentImages();
@@ -337,6 +340,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         catch (Exception e) {
             Log.d("UserProcess", e.getMessage());
             e.printStackTrace();
+        }
+
+    }
+
+    private void closeKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 
