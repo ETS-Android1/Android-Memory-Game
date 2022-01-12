@@ -6,15 +6,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.media.AudioAttributes;
-import android.media.AudioManager;
 import android.media.SoundPool;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Locale;
 
 public class GameActivity extends AppCompatActivity  {
     private TextView score, timerText,textInfo;
@@ -166,21 +161,16 @@ public class GameActivity extends AppCompatActivity  {
         cardFront();
         Collections.shuffle(Arrays.asList(cardArray));
         addListener();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AudioAttributes audioAttributes = new AudioAttributes
-                    .Builder()
-                    .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .build();
+        AudioAttributes audioAttributes = new AudioAttributes
+                .Builder()
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build();
             soundpool = new SoundPool
-                    .Builder()
-                    .setMaxStreams(3)
-                    .setAudioAttributes(audioAttributes)
-                    .build();
-        }
-        else {
-            soundpool = new SoundPool(3, AudioManager.STREAM_MUSIC, 0);
-        }
+                .Builder()
+                .setMaxStreams(3)
+                .setAudioAttributes(audioAttributes)
+                .build();
         correct = soundpool.load(this, R.raw.correct, 1);
         fail = soundpool.load(this, R.raw.fail, 1);
         won = soundpool.load(this, R.raw.won, 1);
