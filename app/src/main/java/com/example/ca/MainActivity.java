@@ -47,9 +47,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView progressText;
     //static Bitmap[] fetched;
     static ArrayList<Bitmap> selected = new ArrayList<Bitmap>();
-    protected static ActivityResultLauncher<Intent> rlGameActivity;
-    protected static boolean musicFlag = true;
+    private static boolean musicFlag;
     ImageButton btnMusic;
+    ImageButton btnLeaderBoard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startService(new Intent(MainActivity.this, MyMusicService.class));
 
         findViewById(R.id.scrollText).setSelected(true);
-        rlGameActivity = registerForActivityResult(
+/*        rlGameActivity = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if(result.getResultCode() == AppCompatActivity.RESULT_OK) {
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                     }
                 }
-        );
+        );*/
 
         btnMusic = findViewById(R.id.btnMusic);
         Intent intent = getIntent();
@@ -96,6 +96,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent = new Intent(MainActivity.this, MyMusicService.class);
                 intent.setAction("play_bg_music");
                 startService(intent);
+            }
+        });
+
+        btnLeaderBoard = findViewById(R.id.btnLeaderBoard);
+        btnLeaderBoard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+/*                editor = sharedPref.edit();
+                editor.putBoolean("music_flag", musicFlag);
+                editor.commit();*/
+                Intent intent = new Intent(MainActivity.this, LeaderBoardActivity.class);
+                startActivity(intent);
             }
         });
 

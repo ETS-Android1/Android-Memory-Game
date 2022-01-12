@@ -1,10 +1,9 @@
 package com.example.ca;
 
-import static com.example.ca.MainActivity.musicFlag;
-import static com.example.ca.MainActivity.rlGameActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
@@ -50,7 +49,16 @@ public class GameActivity extends AppCompatActivity  {
     private Button pauseButton;
     private Button resumeButton;
     private Button backButton;
-    private boolean timerIsRunning = true;
+/*    private boolean timerIsRunning = true;*/
+    Runnable timerRunnable;
+    long millis;
+    long currentSystemTime;
+    long elapsedTimeOnPause = 0;
+    long bestTime1;
+    long bestTime2;
+    long bestTime3;
+    SharedPreferences sharedPref;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +119,7 @@ public class GameActivity extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
                 isPaused = false;
-                timerIsRunning = true;
+/*                timerIsRunning = true;*/
                 pauseForeground.setVisibility(View.INVISIBLE);
                 pauseButton.setVisibility(View.VISIBLE);
                 resumeButton.setVisibility(View.INVISIBLE);
@@ -445,9 +453,52 @@ public class GameActivity extends AppCompatActivity  {
 
     private void checkGameEnd(){
         if (match == 6) {
+            timerHandler.removeCallbacks(timerRunnable);
+            sharedPref = getSharedPreferences("best_time", MODE_PRIVATE);
+            bestTime1 = sharedPref.getLong("best_time1", 0);
+            bestTime2 = sharedPref.getLong("best_time2", 0);
+            bestTime3 = sharedPref.getLong("best_time3", 0);
+
+            if (bestTime1 == 0) {
+                bestTime1 = millis;
+            }
+
+            else if (bestTime1 != 0 && bestTime2 == 0 && millis <= bestTime1)  {
+                bestTime2 = bestTime1;
+                bestTime1 = millis;
+            }
+
+            else if (bestTime1 != 0 &&  bestTime2 == 0 && millis > bestTime1) {
+                bestTime2 = millis;
+            }
+
+            else if (bestTime1 != 0 && bestTime2 != 0 && millis <= bestTime1) {
+                bestTime3 = bestTime2;
+                bestTime2 = bestTime1;
+                bestTime1 = millis;
+            }
+
+            else if (bestTime1 != 0 && bestTime2 != 0 && millis > bestTime1 && millis <= bestTime2) {
+                bestTime3 = bestTime2;
+                bestTime2 = millis;
+            }
+
+            else if (bestTime1 != 0 && bestTime2 != 0 && millis > bestTime1 && millis > bestTime2 && bestTime3 == 0) {
+                bestTime3 = millis;
+            }
+
+            else if (bestTime1 != 0 && bestTime2 != 0 && bestTime3 != 0 && millis <= bestTime3) {
+                bestTime3 = millis;
+            }
+
+            editor = sharedPref.edit();
+            editor.putLong("best_time1", bestTime1);
+            editor.putLong("best_time2", bestTime2);
+            editor.putLong("best_time3", bestTime3);
+            editor.commit();
+
             soundpool.play(won, 1, 1, 1, 0, 1);
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.putExtra("musicFlag", musicFlag);
             startActivity(intent);
         }
     }
@@ -481,22 +532,27 @@ public class GameActivity extends AppCompatActivity  {
     private void startTimer() {
         timerText = findViewById(R.id.timer);
         timerHandler = new Handler();
-       /* long currentSystemTime = System.currentTimeMillis();
-        timerHandler.post(new Runnable() {
+        currentSystemTime = System.currentTimeMillis();
+
+        timerRunnable = new Runnable() {
             @Override
             public void run() {
-                long millis = System.currentTimeMillis() - currentSystemTime;
+                millis = System.currentTimeMillis() - currentSystemTime + elapsedTimeOnPause;
                 int seconds = (int) (millis / 1000);
                 int minutes = seconds / 60;
                 int hours = minutes / 60;
                 seconds = seconds % 60;
 
                 timerText.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
-                if(timerIsRunning){
                 timerHandler.postDelayed(this, 1000);
-            }}
-        });*/
-        timerHandler.post(new Runnable() {
+            }
+        };
+
+        timerHandler.post(timerRunnable);
+
+    }
+
+/*        timerHandler.post(new Runnable() {
             @Override
             public void run() {
                 int hours = timerSeconds / 3600;
@@ -513,9 +569,10 @@ public class GameActivity extends AppCompatActivity  {
         });
 
 
-    }
+    }*/
     private void stopTimer() {
-        timerIsRunning = false;
+        timerHandler.removeCallbacks(timerRunnable);
+        elapsedTimeOnPause = elapsedTimeOnPause + (System.currentTimeMillis() - currentSystemTime);
     }
 
 
@@ -536,10 +593,11 @@ public class GameActivity extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
                 isPaused = false;
-                timerIsRunning = true;
+/*                timerIsRunning = true;*/
                 pauseForeground.setVisibility(View.INVISIBLE);
                 pauseButton.setText("Pause");
-                startTimer();
+                currentSystemTime = System.currentTimeMillis();
+                timerHandler.post(timerRunnable);
             }
         });
     }
