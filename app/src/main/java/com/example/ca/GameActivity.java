@@ -142,6 +142,7 @@ public class GameActivity extends AppCompatActivity  {
             public void onClick(View v) {
                 Intent intent = new Intent(GameActivity.this,MainActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -505,6 +506,7 @@ public class GameActivity extends AppCompatActivity  {
             Intent intent = new Intent(getApplicationContext(), GameCompletionActivity.class);
             intent.putExtra("time",millis);
             startActivity(intent);
+            finish();
         }
     }
 
@@ -620,4 +622,11 @@ public class GameActivity extends AppCompatActivity  {
         super.onStop();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent =  new Intent(GameActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }

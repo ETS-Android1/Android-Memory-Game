@@ -47,6 +47,7 @@ public class LeaderBoardActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(LeaderBoardActivity.this, MainActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -110,5 +111,13 @@ public class LeaderBoardActivity extends AppCompatActivity {
             intent.setAction("resume_bg_music");
             startService(intent);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent =  new Intent(LeaderBoardActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

@@ -59,9 +59,11 @@ public class    GameCompletionActivity extends AppCompatActivity implements View
         if(view.getId()== R.id.homeBtn){
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
+            finish();
         }else if(view.getId()== R.id.boardBtn){
             Intent intent = new Intent(this, LeaderBoardActivity.class);
             startActivity(intent);
+            finish();
         }
     }
 
@@ -82,6 +84,14 @@ public class    GameCompletionActivity extends AppCompatActivity implements View
             intent.setAction("resume_bg_music");
             startService(intent);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent =  new Intent(GameCompletionActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
 
