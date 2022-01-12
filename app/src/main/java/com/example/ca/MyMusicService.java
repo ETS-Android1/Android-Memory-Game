@@ -17,8 +17,6 @@ public class MyMusicService extends Service {
         if (player == null) {
             player = MediaPlayer.create(this, R.raw.music);
         }
-/*            player.setLooping(true);
-            player.start();*/
     }
 
     @Override
@@ -27,14 +25,8 @@ public class MyMusicService extends Service {
 
         if (action != null) {
             if (action.equalsIgnoreCase("play_bg_music")) {
-/*                if (player == null) {*/
-/*                    player = MediaPlayer.create(this, R.raw.music);*/
                     player.setLooping(true);
                     player.start();
-/*                }*/
-/*                else {
-                    onDestroy();
-                }*/
             }
 
             else if (action.equalsIgnoreCase("pause_bg_music")) {

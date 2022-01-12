@@ -2,6 +2,7 @@ package com.example.ca;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -16,11 +17,27 @@ public class LeaderBoardActivity extends AppCompatActivity {
     SharedPreferences sharedPref;
     TextView bestTime1Text, bestTime2Text, bestTime3Text;
     Button homeButton, clearButton;
+    private boolean musicFlag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leader_board);
+
+        sharedPref = getSharedPreferences("music_flag", MODE_PRIVATE);
+        musicFlag = sharedPref.getBoolean("music_flag", musicFlag);
+
+        if (!musicFlag) {
+            Intent intent = new Intent(LeaderBoardActivity.this, MyMusicService.class);
+            intent.setAction("pause_bg_music");
+            startService(intent);
+        }
+        else {
+            Intent intent = new Intent(LeaderBoardActivity.this, MyMusicService.class);
+            intent.setAction("resume_bg_music");
+            startService(intent);
+        }
+
         displayBestTime();
 
 
@@ -73,5 +90,24 @@ public class LeaderBoardActivity extends AppCompatActivity {
         bestTime3Seconds = bestTime3Seconds % 60;
         bestTime3Text = findViewById(R.id.bestTime3);
         bestTime3Text.setText(String.format("Best Time : %02d:%02d:%02d", bestTime3Hours, bestTime3Minutes, bestTime3Seconds));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Intent intent = new Intent(LeaderBoardActivity.this, MyMusicService.class);
+        intent.setAction("pause_bg_music");
+        startService(intent);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        musicFlag = sharedPref.getBoolean("music_flag", musicFlag);
+        if (musicFlag) {
+            Intent intent = new Intent(LeaderBoardActivity.this, MyMusicService.class);
+            intent.setAction("resume_bg_music");
+            startService(intent);
+        }
     }
 }
