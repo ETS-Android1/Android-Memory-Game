@@ -49,7 +49,7 @@ public class GameActivity extends AppCompatActivity  {
     private Button pauseButton;
     private Button resumeButton;
     private Button backButton;
-/*    private boolean timerIsRunning = true;*/
+    /*    private boolean timerIsRunning = true;*/
     Runnable timerRunnable;
     long millis;
     long currentSystemTime;
@@ -119,7 +119,7 @@ public class GameActivity extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
                 isPaused = false;
-/*                timerIsRunning = true;*/
+                /*                timerIsRunning = true;*/
                 pauseForeground.setVisibility(View.INVISIBLE);
                 pauseButton.setVisibility(View.VISIBLE);
                 resumeButton.setVisibility(View.INVISIBLE);
@@ -498,7 +498,8 @@ public class GameActivity extends AppCompatActivity  {
             editor.commit();
 
             soundpool.play(won, 1, 1, 1, 0, 1);
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            Intent intent = new Intent(getApplicationContext(), GameCompletionActivity.class);
+            intent.putExtra("time",millis);
             startActivity(intent);
         }
     }
@@ -552,55 +553,11 @@ public class GameActivity extends AppCompatActivity  {
 
     }
 
-/*        timerHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                int hours = timerSeconds / 3600;
-                int minutes = (timerSeconds % 3600) / 60;
-                int seconds = timerSeconds % 60;
-                String time = String.format(Locale.getDefault(), "%02d:%02d:%02d",
-                        hours, minutes, seconds);
-                timerText.setText(time);
-                if (timerIsRunning) {
-                    timerSeconds++;
-                    timerHandler.postDelayed(this, 1000);
-                }
-            }
-        });
-
-
-    }*/
     private void stopTimer() {
         timerHandler.removeCallbacks(timerRunnable);
         elapsedTimeOnPause = elapsedTimeOnPause + (System.currentTimeMillis() - currentSystemTime);
     }
 
-
-    public void pauseGame() {
-        pauseButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                isPaused = true;
-                pauseForeground.setVisibility(View.VISIBLE);
-                pauseButton.setText("Resume");
-                stopTimer();
-            }
-        });
-    }
-
-    public void resumeGame() {
-        pauseButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                isPaused = false;
-/*                timerIsRunning = true;*/
-                pauseForeground.setVisibility(View.INVISIBLE);
-                pauseButton.setText("Pause");
-                currentSystemTime = System.currentTimeMillis();
-                timerHandler.post(timerRunnable);
-            }
-        });
-    }
 
     @Override
     public void onPause() {

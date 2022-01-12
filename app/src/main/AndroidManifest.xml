@@ -16,7 +16,7 @@
             android:name=".LeaderBoardActivity"
             android:exported="false" />
         <activity
-            android:name=".SecondActivity"
+            android:name=".GameCompletionActivity"
             android:exported="false" />
 
         <service
